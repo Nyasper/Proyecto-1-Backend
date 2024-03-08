@@ -4,9 +4,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"dev": "nodemon ./src/app.ts",
+		"dev": "nodemon ./src/api/index.ts",
 		"build": "pnpm exec tsc",
-		"start": "node ./dist/app.js"
+		"start": "node ./dist/api/index.js"
 	},
 	"keywords": [],
 	"author": "",
