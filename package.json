@@ -4,8 +4,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"dev": "nodemon ./src/api/index.ts",
-		"start": "node ./dist/api/index.js",
+		"dev": "nodemon ./src/app.ts",
+		"start": "node ./dist/src/app.js",
+		"build": "pnpm exec tsc",
 		"vercel-build": "echo Proyecto 1 Backend deployed succefully"
 	},
 	"keywords": [],
