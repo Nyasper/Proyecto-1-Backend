@@ -6,9 +6,7 @@ import cors from 'cors';
 
 const app = express();
 app.use(morgan('tiny'));
-app.use(
-	cors({ origin: 'https://proyecto-1-app-notas.vercel.app', credentials: true })
-);
+app.use(cors({ credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
