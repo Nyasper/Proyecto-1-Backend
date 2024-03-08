@@ -6,7 +6,6 @@
 	"scripts": {
 		"dev": "nodemon ./src/app.ts",
 		"start": "node ./dist/src/app.js",
-		"build": "pnpm exec tsc",
 		"vercel-build": "echo Proyecto 1 Backend deployed succefully"
 	},
 	"keywords": [],
