@@ -1,5 +1,10 @@
 import crypto from 'node:crypto';
-import { TaskInterface, EncrypedTaskInterface } from '../interfaces';
+import {
+	TaskInterface,
+	EncrypedTaskInterface,
+	UsersAdminTasksInterface,
+	UsersAdminTasksEncryptInterface,
+} from '../interfaces';
 
 export class Encrypt {
 	private static key = 'uk561-c115-1v24-aca-245-612-664f';
@@ -67,6 +72,23 @@ export class Encrypt {
 			created: taskEncrypted.created,
 		};
 		return descryptedTask;
+	}
+
+	public static decryptAdminUsersTasks(
+		userAdminEncrypted: UsersAdminTasksEncryptInterface[]
+	): UsersAdminTasksInterface[] {
+		const userAdminDecrypted: UsersAdminTasksInterface[] =
+			userAdminEncrypted.map((user) => {
+				return {
+					userid: user.userid,
+					username: user.username,
+					taskid: user.taskid,
+					title: this.decryptTitle(user.title, user.iv),
+					description: this.decryptDescription(user.description, user.iv),
+					created: user.created,
+				};
+			});
+		return userAdminDecrypted;
 	}
 
 	private static encryptTitle = (taskTitle: string, iv: Buffer) =>

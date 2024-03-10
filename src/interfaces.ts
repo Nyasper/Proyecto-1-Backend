@@ -30,11 +30,30 @@ export interface taskToUpdate {
 	description: string;
 }
 
-export interface UserAdminInterface {
+export interface UsersListAdmin {
+	id: string;
+	username: string;
+	tasks: number;
+	admin: 1 | 0;
+}
+
+export interface UsersAdminTasksInterface {
 	userid: string;
 	username: string;
+	taskid: string;
+	title: string;
+	created: string;
+	description: string;
+}
+
+export interface UsersAdminTasksEncryptInterface {
+	userid: string;
+	username: string;
+	taskid: string;
 	title: string;
 	description: string;
+	created: string;
+	iv: Buffer;
 }
 
 declare module 'express-session' {
