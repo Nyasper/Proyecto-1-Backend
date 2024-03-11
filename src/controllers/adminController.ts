@@ -17,10 +17,10 @@ router.get('/user/all', async (req: Request, res: Response) => {
 	}
 });
 
-router.get('/user/:userId', async (req: Request, res: Response) => {
+router.get('/user/:username', async (req: Request, res: Response) => {
 	try {
-		const { userId } = req.params;
-		const user = AdminServices.getOneUserTasks(userId);
+		const { username } = req.params;
+		const user = AdminServices.getOneUserTasks(username);
 
 		if (!user) return res.status(400).send('Bad Request');
 

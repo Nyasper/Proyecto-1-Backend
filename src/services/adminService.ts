@@ -24,14 +24,15 @@ export default class AdminService extends Database_Sqlite {
 		}
 	}
 
-	public static getOneUserTasks(userId: string): UsersAdminTasksInterface[] {
+	public static getOneUserTasks(username: string): UsersAdminTasksInterface[] {
 		try {
 			const encryptedUserTasks = this.query(
 				`SELECT u.id as userid, u.username, t.id as taskid, t.title, t.description, t.created, iv
 				FROM users u
-				INNER JOIN tasks t ON u.id = t.userid
-				WHERE userid = ?`
-			).all(userId) as UsersAdminTasksEncryptInterface[];
+				INNER JOIN tasks t 
+				ON u.id = t.userid
+				WHERE u.username = ?`
+			).all(username) as UsersAdminTasksEncryptInterface[];
 			const user = Encrypt.decryptAdminUsersTasks(encryptedUserTasks);
 			return user;
 		} catch (error) {
