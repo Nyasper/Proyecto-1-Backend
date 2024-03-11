@@ -11,6 +11,9 @@ dependencies:
   better-sqlite3:
     specifier: ^9.4.3
     version: 9.4.3
+  better-sqlite3-session-store:
+    specifier: ^0.1.0
+    version: 0.1.0
   cors:
     specifier: ^2.8.5
     version: 2.8.5
@@ -245,6 +248,12 @@ packages:
       - supports-color
     dev: false
 
+  /better-sqlite3-session-store@0.1.0:
+    resolution: {integrity: sha512-O4EO5jOGTEa/c1DbZpP3C7VTDLSWe5lrOu1S/j86ipdGZxrSb8bSUVuRgWCgl/SCgEGmyeEqvlMY9HtyOSMOWA==}
+    dependencies:
+      date-fns: 2.16.1
+    dev: false
+
   /better-sqlite3@9.4.3:
     resolution: {integrity: sha512-ud0bTmD9O3uWJGuXDltyj3R47Nz0OHX8iqPOT5PMspGqlu/qQFn+5S2eFBUCrySpavTjFXbi4EgrfVvPAHlImw==}
     requiresBuild: true
@@ -375,6 +384,11 @@ packages:
     dependencies:
       object-assign: 4.1.1
       vary: 1.1.2
+    dev: false
+
+  /date-fns@2.16.1:
+    resolution: {integrity: sha512-sAJVKx/FqrLYHAQeN7VpJrPhagZc9R4ImZIWYRFZaaohR3KzmuK88touwsSwSVT8Qcbd4zoDsnGfX4GFB4imyQ==}
+    engines: {node: '>=0.11'}
     dev: false
 
   /debug@2.6.9:

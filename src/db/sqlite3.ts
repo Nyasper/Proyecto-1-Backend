@@ -14,4 +14,13 @@ export default class Database_Sqlite {
 	public static query(query: string) {
 		return this.db.prepare(query);
 	}
+
+	public static sessionDB = new Database(
+		join(__dirname, '..', '..', 'session.sqlite'),
+		{
+			verbose: console.log,
+			fileMustExist: false,
+			readonly: false,
+		}
+	);
 }

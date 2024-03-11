@@ -1,11 +1,14 @@
 import express from 'express';
 import morgan from 'morgan';
-import session from 'express-session';
 import routes from './routes';
 import cors from 'cors';
+import session from 'express-session';
+const SqliteStore = require('better-sqlite3-session-store')(session);
+import Database_Sqlite from './db/sqlite3';
 
-const app = express();
+export const app = express();
 app.use(morgan('tiny'));
+
 app.use(
 	cors({
 		origin: true,
@@ -13,16 +16,23 @@ app.use(
 		maxAge: 6000000,
 	})
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
 app.use(
 	session({
+		store: new SqliteStore({
+			client: Database_Sqlite.sessionDB,
+			expired: {
+				clear: true,
+				intervalMs: 99900000,
+			},
+		}),
 		secret: 'some secret',
-		saveUninitialized: false,
 		resave: false,
-		cookie: { maxAge: 60000 * 60 * 24 * 30 * 1 }, //1 month
 	})
 );
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const port = process.env.PORT ?? 3000;
 
