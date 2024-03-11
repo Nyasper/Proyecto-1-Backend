@@ -8,9 +8,9 @@ const app = express();
 app.use(morgan('tiny'));
 app.use(
 	cors({
-		origin:
-			'https://proyecto-1-app-notas-7ap96y09a-nyaspers-projects.vercel.app/',
+		origin: true,
 		credentials: true,
+		maxAge: 6000000,
 	})
 );
 app.use(express.json());
