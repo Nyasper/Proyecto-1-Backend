@@ -49,7 +49,9 @@ export default class AdminService extends Database_Sqlite {
 			) as { id: string };
 			if (existUser) {
 				console.log('usuario existe:', existUser);
-				this.query('DELETE FROM users WHERE id = ?').run(existUser.id);
+				this.query('DELETE FROM users WHERE id = ? AND admin = 0').run(
+					existUser.id
+				);
 			} else console.log('usuario no existe', existUser);
 			throw new Error("User doesn't exists.");
 		} catch (error) {
