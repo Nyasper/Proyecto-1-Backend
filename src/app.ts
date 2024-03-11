@@ -8,10 +8,8 @@ const app = express();
 app.use(morgan('tiny'));
 app.use(
 	cors({
-		origin: [
-			'https://proyecto-1-app-notas.vercel.app/',
-			'http://localhost:5173',
-		],
+		origin:
+			'https://proyecto-1-app-notas-7ap96y09a-nyaspers-projects.vercel.app/',
 		credentials: true,
 	})
 );
