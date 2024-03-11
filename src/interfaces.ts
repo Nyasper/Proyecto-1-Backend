@@ -1,7 +1,6 @@
 export interface UserInterface {
 	id?: string;
 	username: string;
-	mail: `${string}@${string}.${string}`;
 	password: string;
 	admin?: 0 | 1;
 }
