@@ -9,7 +9,7 @@ app.use(morgan('tiny'));
 app.use(
 	cors({
 		origin: [
-			'https://proyecto-1-app-notas-ndka4rfmq-nyaspers-projects.vercel.app',
+			'https://proyecto-1-app-notas.vercel.app/',
 			'http://localhost:5173',
 		],
 		credentials: true,
