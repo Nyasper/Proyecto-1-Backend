@@ -7,6 +7,7 @@ export default class Database_Sqlite {
 		{
 			verbose: console.log,
 			fileMustExist: true,
+			readonly: false,
 		}
 	);
 
