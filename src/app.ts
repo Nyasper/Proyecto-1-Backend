@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import morgan from 'morgan';
 import routes from './routes';
 import cors from 'cors';
@@ -37,7 +37,7 @@ app.use(express.urlencoded({ extended: true }));
 const port = process.env.PORT ?? 3000;
 
 app.use(routes);
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
 	res.send('Proyecto 1 Backend');
 });
 
