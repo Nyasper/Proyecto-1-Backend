@@ -7,8 +7,7 @@ export default class Database_Sqlite {
 	private static db = new Database(
 		join(this.route, 'proyecto-1-database.sqlite'),
 		{
-			verbose: console.log,
-			fileMustExist: true,
+			fileMustExist: false,
 			readonly: false,
 		}
 	);
@@ -23,6 +22,3 @@ export default class Database_Sqlite {
 		readonly: false,
 	});
 }
-
-//la ruta es: C:\Users\herre\Documents\PROGRAMACION WEB\Proyectos\Proyecto-1-backend\src\db
-//la ruta es: C:\Users\herre\Documents\PROGRAMACION WEB\Proyectos\Proyecto-1-backend\src\db

@@ -26,7 +26,8 @@ app.use(
 				intervalMs: 99900000,
 			},
 		}),
-		secret: 'some secret',
+		secret: 'somesecret',
+		saveUninitialized: false,
 		resave: false,
 	})
 );
