@@ -16,7 +16,7 @@ app.use(
 		maxAge: 6000000,
 	})
 );
-
+/*
 app.use(
 	session({
 		store: new SqliteStore({
@@ -31,7 +31,7 @@ app.use(
 		resave: false,
 	})
 );
-
+*/
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
