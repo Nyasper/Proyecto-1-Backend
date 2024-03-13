@@ -35,15 +35,10 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const port = process.env.PORT ?? 3000;
-
 app.use(routes);
+
 app.get('/', (req: Request, res: Response) => {
 	res.send('Proyecto 1 Backend');
-});
-
-app.listen(port, () => {
-	console.log(`Server On http://localhost:${port}`);
 });
 
 export default app;
