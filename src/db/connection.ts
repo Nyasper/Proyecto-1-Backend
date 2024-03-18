@@ -22,6 +22,7 @@ dotenv.config({ path: `${rutaActual}/.env` });
 // });
 
 // CLOUD
+console.log('comprobando env:', process.env.POSTGRES_URL);
 export const AppDataSource = new DataSource({
 	type: 'postgres',
 	url: process.env.POSTGRES_URL,

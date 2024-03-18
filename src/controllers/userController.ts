@@ -12,7 +12,7 @@ router.get('/logged', (req, res) => {
 		const admin = req.session.admin ?? false;
 		return res.status(200).json({ logged, admin });
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return res.status(500).send('Internal Server Error');
 	}
 });
@@ -36,7 +36,7 @@ router.post(
 
 			return res.status(201).send('Usuario registrado exitosamente.');
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 			return res.status(500).send('Internal Server Error');
 		}
 	}
@@ -61,7 +61,7 @@ router.post(
 			}
 			return res.status(400).send('Invalid Credentials');
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 			return res.status(500).send('Internal Server Error');
 		}
 	}
