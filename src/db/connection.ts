@@ -10,24 +10,24 @@ const rutaActual = __dirname;
 dotenv.config({ path: `${rutaActual}/.env` });
 
 //local
+// export const AppDataSource = new DataSource({
+// 	type: 'postgres',
+// 	host: process.env.PG_LOCAL_HOST,
+// 	port: Number(process.env.PG_LOCAL_PORT),
+// 	username: process.env.PG_LOCAL_USER,
+// 	password: process.env.PG_LOCAL_PASS,
+// 	database: process.env.PG_LOCAL_DATABASE,
+// 	entities: [User, Task, SessionEntity],
+// 	synchronize: true,
+// });
+
+// CLOUD
 export const AppDataSource = new DataSource({
 	type: 'postgres',
-	host: process.env.PG_LOCAL_HOST,
-	port: Number(process.env.PG_LOCAL_PORT),
-	username: process.env.PG_LOCAL_USER,
-	password: process.env.PG_LOCAL_PASS,
-	database: process.env.PG_LOCAL_DATABASE,
+	url: process.env.POSTGRES_URL,
 	entities: [User, Task, SessionEntity],
 	synchronize: true,
 });
-
-// CLOUD
-// export const AppDataSource = new DataSource({
-// 	type: 'postgres',
-// 	url: process.env.POSTGRES_URL,
-// 	entities: [User, Task, Session],
-// 	synchronize: true,
-// });
 
 export default async function ConnectPostgreSql() {
 	try {
