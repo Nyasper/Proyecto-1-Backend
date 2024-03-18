@@ -9,7 +9,7 @@ import { sessionConfig } from './db/session';
 
 ConnectPostgreSql();
 
-const app = express();
+export const app = express();
 
 app.use(morgan('tiny'));
 //CORS
@@ -31,5 +31,3 @@ app.use(routes);
 app.get('/', (req, res) => {
 	res.send('Proyecto 1 Backend');
 });
-
-export default app;
