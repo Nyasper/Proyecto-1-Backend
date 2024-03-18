@@ -1,9 +1,8 @@
-import Database_Sqlite from '../db/sqlite3';
 import Encrypt from './encyrpt';
 import { AppDataSource } from '../db/connection';
 import User from '../db/entities/userEntity';
 
-export default class AdminService extends Database_Sqlite {
+export default class AdminService {
 	private static UserRepository = AppDataSource.getRepository(User);
 	public static async getAllUsers() {
 		try {

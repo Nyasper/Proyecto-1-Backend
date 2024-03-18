@@ -6,4 +6,4 @@ app.listen(port, () => {
 	console.log(`Server On http://localhost:${port}`);
 });
 
-module.exports = { app };
+export default app;
