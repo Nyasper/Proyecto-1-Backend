@@ -1,25 +1,23 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import { UserInterface } from '../interfaces';
+import type { credentialsInterface } from '../interfaces';
 import { randomUUID } from 'node:crypto';
-import Database_Sqlite from '../db/sqlite3';
+import User from '../db/entities/userEntity';
+import { AppDataSource } from '../db/connection';
 
-export default class UserService extends Database_Sqlite {
-	public static async loginService(req: Request, res: Response) {
-		return res.send('logeado exitosamente');
-	}
+export default class UserService {
+	private static readonly UserRepository = AppDataSource.getRepository(User);
 
-	public static registerUser(user: UserInterface): boolean {
+	public static async registerUser(credentials: credentialsInterface) {
 		try {
-			const existUser = this.query(
-				'SELECT username FROM users where username = ? '
-			).get(user.username) as { username: string } | undefined;
+			const existUser = await this.loginUser(credentials);
+
 			if (!existUser) {
+				const user = new User();
 				user.id = randomUUID();
-				user.password = this.hashPassword(user.password);
-				this.query(
-					'INSERT INTO users(id, username, password) VALUES (?, ?, ?)'
-				).run(user.id, user.username, user.password);
+				user.username = credentials.username;
+				user.password = this.hashPassword(credentials.password);
+				await this.UserRepository.save(user);
 				return true;
 			}
 			return false;
@@ -29,11 +27,14 @@ export default class UserService extends Database_Sqlite {
 		}
 	}
 
-	public static loginUser(username: string, password: string) {
-		const user = this.query(
-			'SELECT id, username, password, admin FROM users WHERE username = ?'
-		).get(username) as UserInterface;
-		if (user && this.comparePasswords(password, user.password)) return user;
+	public static async loginUser(
+		userCredentails: credentialsInterface
+	): Promise<User | undefined> {
+		const user = await this.UserRepository.findOneBy({
+			username: userCredentails.username,
+		});
+		if (user && this.comparePasswords(userCredentails.password, user.password))
+			return user;
 		return undefined;
 	}
 
@@ -60,10 +61,5 @@ export default class UserService extends Database_Sqlite {
 			console.error('Error al comparar contraseñas:', error);
 			throw error;
 		}
-	}
-
-	private static isAdmin(user: UserInterface): boolean {
-		if (user.admin === 1) return true;
-		else return false;
 	}
 }

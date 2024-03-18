@@ -1,21 +1,15 @@
-import {
-	UsersAdminTasksInterface,
-	UsersAdminTasksEncryptInterface,
-	UsersListAdmin,
-} from '../interfaces';
 import Database_Sqlite from '../db/sqlite3';
-import { Encrypt } from './encyrpt';
+import Encrypt from './encyrpt';
+import { AppDataSource } from '../db/connection';
+import User from '../db/entities/userEntity';
 
 export default class AdminService extends Database_Sqlite {
-	public static getAllUsers(): UsersListAdmin[] {
+	private static UserRepository = AppDataSource.getRepository(User);
+	public static async getAllUsers() {
 		try {
-			return this.query(
-				`SELECT u.id, u.username, COUNT(t.id) as tasks, u.admin
-				FROM users u
-				LEFT JOIN tasks t ON u.id = t.userid
-				GROUP BY userid
-				ORDER BY u.admin DESC,tasks DESC`
-			).all() as UsersListAdmin[];
+			const allUsers = await this.UserRepository.find();
+
+			return allUsers;
 		} catch (error) {
 			console.error(
 				'\nError al obtener todos los usuarios con tareas en funcion "AdminService.getAllUsers()"'
@@ -24,17 +18,15 @@ export default class AdminService extends Database_Sqlite {
 		}
 	}
 
-	public static getOneUserTasks(username: string): UsersAdminTasksInterface[] {
+	public static async getOneUserTasks(username: string) {
 		try {
-			const encryptedUserTasks = this.query(
-				`SELECT u.id as userid, u.username, t.id as taskid, t.title, t.description, t.created, iv
-				FROM users u
-				INNER JOIN tasks t 
-				ON u.id = t.userid
-				WHERE u.username = ?`
-			).all(username) as UsersAdminTasksEncryptInterface[];
-			const user = Encrypt.decryptAdminUsersTasks(encryptedUserTasks);
-			return user;
+			const user = await this.UserRepository.findOne({
+				where: { username },
+				relations: { tasks: true },
+			});
+			if (!user) return undefined;
+			const tasksDecrypted = Encrypt.decryptTasks(user.tasks);
+			return tasksDecrypted;
 		} catch (error) {
 			console.error(
 				'\nError al obtener un usuario en funcion "AdminService.getOneUser()"'
@@ -43,18 +35,12 @@ export default class AdminService extends Database_Sqlite {
 		}
 	}
 
-	public static deleteUser(userId: string) {
+	public static async deleteUser(id: string) {
 		try {
-			const existUser = this.query('SELECT id FROM users WHERE id = ?').get(
-				userId
-			) as { id: string };
-			if (existUser) {
-				console.log('usuario existe:', existUser);
-				this.query('DELETE FROM users WHERE id = ? AND admin = 0').run(
-					existUser.id
-				);
-			} else console.log('usuario no existe', existUser);
-			throw new Error("User doesn't exists.");
+			const existUser = await this.UserRepository.findOneByOrFail({ id });
+
+			await this.UserRepository.delete({ id: existUser.id });
+			console.log(`user with ID ${id} deleted succefully`);
 		} catch (error) {
 			console.error(
 				'Error al intentar eliminar usuario en funcion "deleteUser".',

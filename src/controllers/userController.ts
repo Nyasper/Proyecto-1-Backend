@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
-import { UserInterface } from '../interfaces';
+import type { credentialsInterface } from '../interfaces';
 import UserService from '../services/userService';
 import Middlewares from '../middlewares';
 
@@ -22,13 +22,13 @@ router.post(
 	Middlewares.isNotLogged,
 	async (req: Request, res: Response) => {
 		try {
-			const user = req.body as UserInterface;
+			const user: credentialsInterface = req.body;
 
 			if (!user.username || !user.password) {
 				return res.status(400).send('Bad Request');
 			}
 
-			const existUser = UserService.registerUser(user);
+			const existUser = await UserService.registerUser(user);
 			if (!existUser)
 				return res
 					.status(409)
@@ -47,10 +47,11 @@ router.post(
 	Middlewares.isNotLogged,
 	async (req: Request, res: Response) => {
 		try {
-			const { username, password } = req.body;
+			const userCredentials: credentialsInterface = req.body;
 
-			if (!username || !password) return res.status(400).send('Bad Request');
-			const user = UserService.loginUser(username, password);
+			if (!userCredentials.username || !userCredentials.password)
+				return res.status(400).send('username or password not provided.');
+			const user = await UserService.loginUser(userCredentials);
 			if (user) {
 				req.session.logged = true;
 				req.session.userId = user.id;

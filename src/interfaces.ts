@@ -1,26 +1,11 @@
-export interface UserInterface {
-	id?: string;
+export interface credentialsInterface {
 	username: string;
 	password: string;
-	admin?: 0 | 1;
 }
 
-export interface TaskInterface {
-	id: string;
-	userid: string;
+export interface taskFrontInterface {
 	title: string;
 	description: string;
-	created: string;
-	iv?: Buffer;
-}
-
-export interface EncrypedTaskInterface {
-	id: string;
-	userid: string;
-	title: string;
-	description: string;
-	iv: Buffer;
-	created: string;
 }
 
 export interface taskToUpdate {
@@ -28,31 +13,11 @@ export interface taskToUpdate {
 	title: string;
 	description: string;
 }
-
-export interface UsersListAdmin {
+export interface DecryptedTaskInterface {
 	id: string;
-	username: string;
-	tasks: number;
-	admin: 1 | 0;
-}
-
-export interface UsersAdminTasksInterface {
-	userid: string;
-	username: string;
-	taskid: string;
-	title: string;
-	created: string;
-	description: string;
-}
-
-export interface UsersAdminTasksEncryptInterface {
-	userid: string;
-	username: string;
-	taskid: string;
 	title: string;
 	description: string;
-	created: string;
-	iv: Buffer;
+	createdAt: Date;
 }
 
 declare module 'express-session' {
@@ -60,7 +25,7 @@ declare module 'express-session' {
 		logged: boolean;
 		userId: string;
 		username: string;
-		admin: 1 | 0;
+		admin: boolean;
 	}
 }
 

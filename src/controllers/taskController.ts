@@ -1,17 +1,19 @@
 import { Router } from 'express';
-import { TaskInterface, taskToUpdate } from '../interfaces';
+import { taskFrontInterface, taskToUpdate } from '../interfaces';
 import TaskService from '../services/taskService';
 
 const router = Router();
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
 	try {
-		const task = req.body as TaskInterface;
+		const task: taskFrontInterface = req.body;
 
 		if (!task.title || !task.description || !req.session.userId)
-			return res.status(400).send('Bad Request');
+			return res
+				.status(400)
+				.send('Bad Request, title or description not provided.');
 
-		TaskService.createTask(req.session.userId, task);
+		await TaskService.createTask(req.session.userId, task);
 
 		return res.status(201).send('tarea creada');
 	} catch (error) {
@@ -20,10 +22,12 @@ router.post('/', (req, res) => {
 	}
 });
 
-router.get('/all', (req, res) => {
+router.get('/all', async (req, res) => {
 	try {
-		const tasks = TaskService.getAllUserTasks(req.session.userId as string);
-		console.log('el id del user', req.session.userId);
+		const tasks = await TaskService.getAllUserTasks(
+			req.session.userId as string
+		);
+
 		if (!tasks) return res.status(400).send('Bad Request');
 
 		return res.status(200).json(tasks);
@@ -33,11 +37,12 @@ router.get('/all', (req, res) => {
 	}
 });
 
-router.get('/:taskId', (req, res) => {
+router.get('/:taskId', async (req, res) => {
 	try {
 		const { taskId } = req.params;
-		const task = TaskService.getOneTaskById(taskId);
-		if (!task) return res.status(400).send('Bad Request');
+		if (!taskId)
+			return res.status(400).send('Bad Request, task ID not provided');
+		const task = await TaskService.getOneTaskById(taskId);
 		return res.status(200).json(task);
 	} catch (error) {
 		console.log(error);
@@ -45,10 +50,10 @@ router.get('/:taskId', (req, res) => {
 	}
 });
 
-router.put('/', (req, res) => {
+router.put('/', async (req, res) => {
 	try {
-		const taskToUpdate = req.body as taskToUpdate;
-		TaskService.updateTask(taskToUpdate);
+		const taskToUpdate: taskToUpdate = req.body;
+		await TaskService.updateTask(taskToUpdate);
 		return res.status(200).send('Task Updated Succefully');
 	} catch (error) {
 		console.log(error);

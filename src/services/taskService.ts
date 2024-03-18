@@ -1,28 +1,37 @@
-import Database_Sqlite from '../db/sqlite3';
+import Task from '../db/entities/taskEntity';
 import {
-	EncrypedTaskInterface,
-	TaskInterface,
+	DecryptedTaskInterface,
+	taskFrontInterface,
 	taskToUpdate,
 } from '../interfaces';
-import { Encrypt } from './encyrpt';
+import Encrypt from './encyrpt';
 import { randomUUID } from 'node:crypto';
+import { randomBytes } from 'node:crypto';
+import { AppDataSource } from '../db/connection';
+import User from '../db/entities/userEntity';
 
-export default class TaskService extends Database_Sqlite {
-	public static createTask(userId: string, task: TaskInterface) {
+export default class TaskService {
+	private static readonly TaskRepository = AppDataSource.getRepository(Task);
+	private static readonly UserRepository = AppDataSource.getRepository(User);
+	public static async createTask(
+		userId: string,
+		taskParam: taskFrontInterface
+	) {
 		try {
+			const task = new Task();
+
 			task.id = randomUUID();
-
-			const encryptedTask = Encrypt.encryptTask(task);
-
-			return this.query(
-				'INSERT INTO tasks (userid, id, title, description, iv) VALUES (?, ?, ?, ?, ?)'
-			).run(
-				userId,
-				encryptedTask.id,
-				encryptedTask.title,
-				encryptedTask.description,
-				encryptedTask.iv
+			task.iv = randomBytes(16);
+			task.title = Encrypt.encryptTitle(taskParam.title, task.iv);
+			task.description = Encrypt.encryptDescription(
+				taskParam.description,
+				task.iv
 			);
+			task.user = await this.UserRepository.findOneByOrFail({
+				id: userId,
+			});
+
+			await this.TaskRepository.save(task);
 		} catch (error) {
 			console.error(
 				'\nError al intentar crear tarea en funcion "TaskService.createTask()"'
@@ -31,12 +40,19 @@ export default class TaskService extends Database_Sqlite {
 		}
 	}
 
-	public static getAllUserTasks(userId: string) {
+	public static async getAllUserTasks(userId: string) {
 		try {
-			const tasks = this.query(
-				'SELECT id,title,description,iv,created FROM tasks WHERE userid = ?'
-			).all(userId) as EncrypedTaskInterface[];
-			const desencryptedTasks: TaskInterface[] = Encrypt.decryptTasks(tasks);
+			console.log({ userId });
+			const tasks = await this.UserRepository.findOne({
+				where: { id: userId },
+				select: { id: true, tasks: true },
+				relations: { tasks: true },
+			});
+
+			const desencryptedTasks: DecryptedTaskInterface[] = tasks?.tasks
+				? Encrypt.decryptTasks(tasks.tasks)
+				: [];
+
 			return desencryptedTasks;
 		} catch (error) {
 			console.error(
@@ -45,15 +61,12 @@ export default class TaskService extends Database_Sqlite {
 			throw error;
 		}
 	}
-
-	public static getOneTaskById(taskId: string) {
+	public static async getOneTaskById(id: string) {
 		try {
-			const taskEncrypted = this.query(
-				'SELECT id,title,description,iv FROM tasks WHERE id = ?'
-			).get(taskId) as EncrypedTaskInterface;
+			const taskEncrypted = await this.TaskRepository.findOneByOrFail({ id });
+			const taskDecrypted = Encrypt.decryptOneTask(taskEncrypted);
 
-			const decryptedTask = Encrypt.decryptOneTask(taskEncrypted);
-			return decryptedTask;
+			return taskDecrypted;
 		} catch (error) {
 			console.error(
 				'Error al intentar obtener todas las tareas en funcion "TaskSertvice.getAllUserTasks()"'
@@ -61,10 +74,9 @@ export default class TaskService extends Database_Sqlite {
 			throw error;
 		}
 	}
-
-	public static deleteTaskById(taskId: string) {
+	public static async deleteTaskById(id: string) {
 		try {
-			return this.query('DELETE FROM tasks where id = ?').run(taskId);
+			return await this.TaskRepository.delete({ id });
 		} catch (error) {
 			console.error(
 				'ERROR al intentar eliminar una tarea en funcion "deleteTaskById"'
@@ -73,20 +85,18 @@ export default class TaskService extends Database_Sqlite {
 		}
 	}
 
-	public static updateTask(taskToUpdate: taskToUpdate) {
+	public static async updateTask(taskToUpdate: taskToUpdate) {
 		try {
-			const { id: existTask, iv } = this.query(
-				'SELECT id, iv FROM tasks WHERE id = ?'
-			).get(taskToUpdate.id) as { id: string; iv: Buffer };
-			if (existTask) {
-				const encryptTask = Encrypt.encryptTask(
-					taskToUpdate as TaskInterface,
-					iv
-				);
-				return this.query(
-					'UPDATE tasks SET title = ?, description = ? WHERE id = ?'
-				).run(encryptTask.title, encryptTask.description, taskToUpdate.id);
-			}
+			const task = await this.TaskRepository.findOneByOrFail({
+				id: taskToUpdate.id,
+			});
+			task.iv = task.iv = randomBytes(16);
+			task.title = Encrypt.encryptTitle(taskToUpdate.title, task.iv);
+			task.description = Encrypt.encryptDescription(
+				taskToUpdate.description,
+				task.iv
+			);
+			await this.TaskRepository.save(task);
 		} catch (error) {
 			console.error(
 				'ERROR al intentar actualizar una tarea en funcion "updateTask"'

@@ -9,4 +9,5 @@ const router = Router();
 router.use('/api/v1/admin', Middlewares.isAdmin, adminController);
 router.use('/api/v1/user', userController);
 router.use('/api/v1/tasks', Middlewares.isLogged, taskController);
+
 export default router;

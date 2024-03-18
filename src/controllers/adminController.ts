@@ -6,7 +6,7 @@ const router = Router();
 
 router.get('/user/all', async (req: Request, res: Response) => {
 	try {
-		const users = AdminServices.getAllUsers();
+		const users = await AdminServices.getAllUsers();
 
 		if (!users) return res.status(400).send('Bad Request');
 
@@ -20,9 +20,9 @@ router.get('/user/all', async (req: Request, res: Response) => {
 router.get('/user/:username', async (req: Request, res: Response) => {
 	try {
 		const { username } = req.params;
-		const user = AdminServices.getOneUserTasks(username);
+		const user = await AdminServices.getOneUserTasks(username);
 
-		if (!user) return res.status(400).send('Bad Request');
+		if (!user) return res.status(400).send('Username Doesnt exists');
 
 		return res.status(200).json(user);
 	} catch (error) {
