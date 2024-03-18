@@ -5,7 +5,7 @@ import routes from './routes';
 import cors from 'cors';
 import 'reflect-metadata';
 import ConnectPostgreSql from './db/connection';
-import { sessionConfig } from './db/session';
+import { sessionConfig } from './db/sessionConfig';
 
 ConnectPostgreSql();
 
