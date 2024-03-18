@@ -5,10 +5,10 @@ import {
 	CreateDateColumn,
 	ManyToOne,
 } from 'typeorm';
-import User from './userEntity';
+import { User } from './userEntity';
 
 @Entity('tasks')
-export default class Task {
+export class Task {
 	@PrimaryColumn()
 	id: string;
 

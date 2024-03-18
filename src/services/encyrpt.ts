@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import { DecryptedTaskInterface } from '../interfaces';
-import Task from '../db/entities/taskEntity';
+import { Task } from '../db/entities/taskEntity';
 
 export default class Encrypt {
 	private static key = 'uk561-c115-1v24-aca-245-612-664f';

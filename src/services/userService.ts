@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import type { credentialsInterface } from '../interfaces';
 import { randomUUID } from 'node:crypto';
-import User from '../db/entities/userEntity';
+import { User } from '../db/entities/userEntity';
 import { AppDataSource } from '../db/connection';
 
 export default class UserService {

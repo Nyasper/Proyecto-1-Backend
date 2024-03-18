@@ -1,6 +1,6 @@
 import Encrypt from './encyrpt';
 import { AppDataSource } from '../db/connection';
-import User from '../db/entities/userEntity';
+import { User } from '../db/entities/userEntity';
 
 export default class AdminService {
 	private static UserRepository = AppDataSource.getRepository(User);

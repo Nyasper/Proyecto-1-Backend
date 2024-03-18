@@ -1,14 +1,14 @@
-import Task from '../db/entities/taskEntity';
 import {
 	DecryptedTaskInterface,
 	taskFrontInterface,
 	taskToUpdate,
 } from '../interfaces';
+import { User } from '../db/entities/userEntity';
+import { Task } from '../db/entities/taskEntity';
 import Encrypt from './encyrpt';
 import { randomUUID } from 'node:crypto';
 import { randomBytes } from 'node:crypto';
 import { AppDataSource } from '../db/connection';
-import User from '../db/entities/userEntity';
 
 export default class TaskService {
 	private static readonly TaskRepository = AppDataSource.getRepository(Task);
