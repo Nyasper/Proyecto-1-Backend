@@ -42,7 +42,6 @@ export default class TaskService {
 
 	public static async getAllUserTasks(userId: string) {
 		try {
-			console.log({ userId });
 			const tasks = await this.UserRepository.findOne({
 				where: { id: userId },
 				select: { id: true, tasks: true },

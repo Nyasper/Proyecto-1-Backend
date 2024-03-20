@@ -26,6 +26,11 @@ app.use(sessionConfig);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use((req, res, next) => {
+	console.log(req.session);
+	next();
+});
+
 app.use(routes);
 
 app.get('/', (req, res) => {
