@@ -1,16 +1,15 @@
 import { Router } from 'express';
 import { Request, Response } from 'express';
-import type { credentialsInterface } from '../interfaces';
+import type { credentialsInterface, TokenPayload } from '../interfaces';
 import UserService from '../services/userService';
 import Middlewares from '../middlewares';
 
 const router = Router();
 
-router.get('/logged', (req, res) => {
+router.get('/auth', Middlewares.auth, (req, res) => {
 	try {
-		const logged = req.session.logged ?? false;
-		const admin = req.session.admin ?? false;
-		return res.status(200).json({ logged, admin });
+		const user = req.user ?? {};
+		return res.json(user);
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send('Internal Server Error');
@@ -52,12 +51,15 @@ router.post(
 			if (!userCredentials.username || !userCredentials.password)
 				return res.status(400).send('username or password not provided.');
 			const user = await UserService.loginUser(userCredentials);
+			// const token = null;
+			// res.json({ token });
+
+			// const accessToken = generate;
 			if (user) {
-				req.session.logged = true;
-				req.session.userId = user.id;
-				req.session.username = user.username;
-				req.session.admin = user.admin;
-				return res.status(200).send('Loggin in Succefully');
+				user.password = '';
+				const token = UserService.generateToken(user);
+
+				return res.status(200).json({ token });
 			}
 			return res.status(400).send('Invalid Credentials');
 		} catch (error) {
@@ -66,15 +68,5 @@ router.post(
 		}
 	}
 );
-
-router.get('/logout', (req, res) => {
-	req.session.destroy(function (err) {
-		if (err) {
-			console.error('ERROR trying to Logout:', err);
-			return res.status(500).send('Internal Server Error');
-		}
-		res.status(200).send('logout succefully');
-	});
-});
 
 export default router;

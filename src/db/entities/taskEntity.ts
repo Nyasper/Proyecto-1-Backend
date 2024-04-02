@@ -12,14 +12,11 @@ export class Task {
 	@PrimaryColumn()
 	id: string;
 
-	@Column({ type: 'bytea' })
-	title: Buffer;
+	@Column({ nullable: false })
+	title: string;
 
-	@Column({ type: 'bytea' })
-	description: Buffer;
-
-	@Column({ type: 'bytea' })
-	iv: Buffer;
+	@Column({ nullable: false })
+	description: string;
 
 	@CreateDateColumn()
 	createdAt: Date;

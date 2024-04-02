@@ -20,6 +20,13 @@ export interface DecryptedTaskInterface {
 	createdAt: Date;
 }
 
+export interface TokenPayload {
+	id: string;
+	username: string;
+	admin: boolean;
+	exp: number;
+}
+
 declare module 'express-session' {
 	interface SessionData {
 		logged: boolean;
@@ -32,5 +39,13 @@ declare module 'express-session' {
 declare module 'express' {
 	interface SessionData {
 		session: any;
+	}
+}
+
+declare global {
+	namespace Express {
+		interface Request {
+			user?: TokenPayload; // Puedes ajustar el tipo de 'user' según la estructura de tus tokens
+		}
 	}
 }

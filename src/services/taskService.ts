@@ -1,13 +1,7 @@
-import {
-	DecryptedTaskInterface,
-	taskFrontInterface,
-	taskToUpdate,
-} from '../interfaces';
+import { taskFrontInterface, taskToUpdate } from '../interfaces';
 import { User } from '../db/entities/userEntity';
 import { Task } from '../db/entities/taskEntity';
-import Encrypt from './encyrpt';
 import { randomUUID } from 'node:crypto';
-import { randomBytes } from 'node:crypto';
 import { AppDataSource } from '../db/connection';
 
 export default class TaskService {
@@ -21,12 +15,8 @@ export default class TaskService {
 			const task = new Task();
 
 			task.id = randomUUID();
-			task.iv = randomBytes(16);
-			task.title = Encrypt.encryptTitle(taskParam.title, task.iv);
-			task.description = Encrypt.encryptDescription(
-				taskParam.description,
-				task.iv
-			);
+			task.title = taskParam.title;
+			task.description = taskParam.description;
 			task.user = await this.UserRepository.findOneByOrFail({
 				id: userId,
 			});
@@ -48,11 +38,7 @@ export default class TaskService {
 				relations: { tasks: true },
 			});
 
-			const desencryptedTasks: DecryptedTaskInterface[] = tasks?.tasks
-				? Encrypt.decryptTasks(tasks.tasks)
-				: [];
-
-			return desencryptedTasks;
+			return tasks?.tasks ?? [];
 		} catch (error) {
 			console.error(
 				'Error al intentar obtener todas las tareas en funcion "TaskService.getAllUserTasks()"'
@@ -62,10 +48,9 @@ export default class TaskService {
 	}
 	public static async getOneTaskById(id: string) {
 		try {
-			const taskEncrypted = await this.TaskRepository.findOneByOrFail({ id });
-			const taskDecrypted = Encrypt.decryptOneTask(taskEncrypted);
+			const task = await this.TaskRepository.findOneByOrFail({ id });
 
-			return taskDecrypted;
+			return task;
 		} catch (error) {
 			console.error(
 				'Error al intentar obtener todas las tareas en funcion "TaskSertvice.getAllUserTasks()"'
@@ -89,12 +74,8 @@ export default class TaskService {
 			const task = await this.TaskRepository.findOneByOrFail({
 				id: taskToUpdate.id,
 			});
-			task.iv = task.iv = randomBytes(16);
-			task.title = Encrypt.encryptTitle(taskToUpdate.title, task.iv);
-			task.description = Encrypt.encryptDescription(
-				taskToUpdate.description,
-				task.iv
-			);
+			task.title = taskToUpdate.title;
+			task.description = taskToUpdate.description;
 			await this.TaskRepository.save(task);
 		} catch (error) {
 			console.error(

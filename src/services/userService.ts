@@ -1,16 +1,18 @@
-import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import type { credentialsInterface } from '../interfaces';
+import type { credentialsInterface, TokenPayload } from '../interfaces';
 import { randomUUID } from 'node:crypto';
 import { User } from '../db/entities/userEntity';
 import { AppDataSource } from '../db/connection';
+import jwt from 'jsonwebtoken';
 
 export default class UserService {
 	private static readonly UserRepository = AppDataSource.getRepository(User);
 
 	public static async registerUser(credentials: credentialsInterface) {
 		try {
-			const existUser = await this.loginUser(credentials);
+			const existUser = await this.UserRepository.findOneBy({
+				username: credentials.username,
+			});
 
 			if (!existUser) {
 				const user = new User();
@@ -36,6 +38,36 @@ export default class UserService {
 		if (user && this.comparePasswords(userCredentails.password, user.password))
 			return user;
 		return undefined;
+	}
+
+	public static generateToken(user: User) {
+		const secret = process.env.TOKEN_SECRET;
+		if (!secret) throw new Error('TOKEN_SECRETE missing on generateToken');
+		const { id, username, admin } = user;
+		const token = jwt.sign(
+			{
+				id,
+				username,
+				admin,
+				exp: Date.now() + 7 * 24 * 60 * 60 * 1000, //7 days of expiration
+			},
+			secret
+		);
+		return token;
+	}
+
+	public static validateToken(token: string) {
+		const secret = process.env.TOKEN_SECRET;
+		if (!secret) throw new Error('TOKEN_SECRET missing on generateToken');
+
+		if (!token) throw new Error('Token is missing');
+		try {
+			const payload = jwt.verify(token, secret) as TokenPayload;
+			return payload;
+		} catch (error) {
+			console.error(error);
+			throw new Error('Invalid token');
+		}
 	}
 
 	private static hashPassword(password: string) {

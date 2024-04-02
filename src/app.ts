@@ -5,13 +5,15 @@ import routes from './routes';
 import cors from 'cors';
 import 'reflect-metadata';
 import ConnectPostgreSql from './db/connection';
-import { sessionConfig } from './db/sessionConfig';
 
+//start DB connection
 ConnectPostgreSql();
 
 export const app = express();
 
+//morgan logger
 app.use(morgan('tiny'));
+
 //CORS
 app.use(
 	cors({
@@ -20,17 +22,12 @@ app.use(
 		maxAge: 6000000,
 	})
 );
-//session
-app.use(sessionConfig);
 
+//Express Configs
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-	console.log(req.session);
-	next();
-});
-
+//router config
 app.use(routes);
 
 app.get('/', (req, res) => {

@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
-import { DecryptedTaskInterface } from '../interfaces';
-import { Task } from '../db/entities/taskEntity';
+// import { DecryptedTaskInterface } from '../interfaces';
+// import { Task } from '../db/entities/taskEntity';
 
 export default class Encrypt {
 	private static key = 'uk561-c115-1v24-aca-245-612-664f';
@@ -26,7 +26,7 @@ export default class Encrypt {
 		decryptedData = Buffer.concat([decryptedData, decipher.final()]);
 		return decryptedData.toString('utf8');
 	}
-
+	/*
 	public static decryptTasks(tasksEncrypted: Task[]): DecryptedTaskInterface[] {
 		const taskDecrypted: DecryptedTaskInterface[] = tasksEncrypted.map(
 			(task) => {
@@ -62,4 +62,5 @@ export default class Encrypt {
 		Encrypt.decrypt(taskTitle, iv);
 	private static decryptDescription = (taskDescription: Buffer, iv: Buffer) =>
 		Encrypt.decrypt(taskDescription, iv);
+		*/
 }

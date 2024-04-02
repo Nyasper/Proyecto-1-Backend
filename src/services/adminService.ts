@@ -1,4 +1,3 @@
-import Encrypt from './encyrpt';
 import { AppDataSource } from '../db/connection';
 import { User } from '../db/entities/userEntity';
 
@@ -23,9 +22,8 @@ export default class AdminService {
 				where: { username },
 				relations: { tasks: true },
 			});
-			if (!user) return undefined;
-			const tasksDecrypted = Encrypt.decryptTasks(user.tasks);
-			return tasksDecrypted;
+			if (!user) return [];
+			return user.tasks;
 		} catch (error) {
 			console.error(
 				'\nError al obtener un usuario en funcion "AdminService.getOneUser()"'
@@ -39,7 +37,6 @@ export default class AdminService {
 			const existUser = await this.UserRepository.findOneByOrFail({ id });
 
 			await this.UserRepository.delete({ id: existUser.id });
-			console.log(`user with ID ${id} deleted succefully`);
 		} catch (error) {
 			console.error(
 				'Error al intentar eliminar usuario en funcion "deleteUser".',
