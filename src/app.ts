@@ -1,10 +1,9 @@
 require('dotenv').config();
+import 'reflect-metadata';
 import express from 'express';
 import morgan from 'morgan';
 import routes from './routes';
 import cors from 'cors';
-import 'reflect-metadata';
-require('dotenv').config();
 import ConnectPostgreSql from './db/connection';
 
 //start DB connection

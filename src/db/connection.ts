@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import 'reflect-metadata';
 import { User } from './entities/userEntity';
 import { Task } from './entities/taskEntity';
 import { DataSource } from 'typeorm';
