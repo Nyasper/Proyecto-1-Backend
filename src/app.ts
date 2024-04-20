@@ -4,10 +4,6 @@ import express from 'express';
 import morgan from 'morgan';
 import routes from './routes';
 import cors from 'cors';
-import ConnectPostgreSql from './db/connection';
-
-//start DB connection
-ConnectPostgreSql();
 
 export const app = express();
 
