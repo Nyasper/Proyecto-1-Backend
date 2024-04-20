@@ -4,9 +4,6 @@ import { Task } from './entities/taskEntity';
 import { DataSource } from 'typeorm';
 
 // const rutaActual = dirname(fileURLToPath(import.meta.url));
-const rutaActual = __dirname;
-
-dotenv.config({ path: `${rutaActual}/.env` });
 
 //local
 // export const AppDataSource = new DataSource({
@@ -25,7 +22,7 @@ export const AppDataSource = new DataSource({
 	type: 'postgres',
 	url: process.env.POSTGRES_URL,
 	entities: [User, Task],
-	synchronize: true,
+	synchronize: false,
 });
 
 export default async function ConnectPostgreSql() {
