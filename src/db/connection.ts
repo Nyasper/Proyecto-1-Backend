@@ -24,10 +24,10 @@ export const AppDataSource = new DataSource({
 	entities: [User, Task],
 	synchronize: false,
 });
+(async () => await AppDataSource.initialize())();
 
 export default async function ConnectPostgreSql() {
 	try {
-		await AppDataSource.initialize();
 		console.log('connected to PostgreSql succefully');
 	} catch (error) {
 		console.error('Error al intentar conectar a PostgreSql', error);
