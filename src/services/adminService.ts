@@ -1,4 +1,4 @@
-import { AppDataSource } from '../db/connection';
+import { AppDataSource } from '../db/orm.config';
 import { User } from '../db/entities/userEntity';
 
 export default class AdminService {

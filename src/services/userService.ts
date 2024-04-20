@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import type { credentialsInterface, TokenPayload } from '../interfaces';
 import { randomUUID } from 'node:crypto';
 import { User } from '../db/entities/userEntity';
-import { AppDataSource } from '../db/connection';
+import { AppDataSource } from '../db/orm.config';
 import jwt from 'jsonwebtoken';
 
 export default class UserService {

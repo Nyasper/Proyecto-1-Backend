@@ -2,7 +2,7 @@ import { taskFrontInterface, taskToUpdate } from '../interfaces';
 import { User } from '../db/entities/userEntity';
 import { Task } from '../db/entities/taskEntity';
 import { randomUUID } from 'node:crypto';
-import { AppDataSource } from '../db/connection';
+import { AppDataSource } from '../db/orm.config';
 
 export default class TaskService {
 	private static readonly TaskRepository = AppDataSource.getRepository(Task);
